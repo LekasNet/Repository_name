@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:adyshkin_pcs/models/CardModel.dart';
-import 'package:adyshkin_pcs/di/cardsStorage.dart';
+import 'package:adyshkin_pcs/api_service.dart';
 
 class FavouritesPage extends StatefulWidget {
   @override
@@ -8,7 +8,7 @@ class FavouritesPage extends StatefulWidget {
 }
 
 class _FavouritesPageState extends State<FavouritesPage> {
-  final CardModelStorage _storage = CardModelStorage();
+  final ApiService _apiService = ApiService();
   List<CardModel> _favouriteCards = [];
 
   @override
@@ -18,10 +18,14 @@ class _FavouritesPageState extends State<FavouritesPage> {
   }
 
   Future<void> _loadFavouriteCards() async {
-    final cards = await _storage.getAllCardModels();
-    setState(() {
-      _favouriteCards = cards.where((card) => card.favourite).toList();
-    });
+    try {
+      final cards = await _apiService.fetchCards();
+      setState(() {
+        _favouriteCards = cards.where((card) => card.favourite).toList();
+      });
+    } catch (e) {
+      print('Failed to load favourite cards: $e');
+    }
   }
 
   @override
@@ -40,6 +44,22 @@ class _FavouritesPageState extends State<FavouritesPage> {
             title: Text(card.name),
             subtitle: Text(card.description),
             leading: card.image,
+            trailing: IconButton(
+              icon: Icon(
+                card.favourite ? Icons.favorite : Icons.favorite_border,
+                color: card.favourite ? Colors.red : Colors.grey,
+              ),
+              onPressed: () async {
+                setState(() {
+                  card.favourite = !card.favourite;
+                });
+                try {
+                  await _apiService.updateCard(card);
+                } catch (e) {
+                  print('Failed to update card: $e');
+                }
+              },
+            ),
           );
         },
       ),

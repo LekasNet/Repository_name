@@ -58,8 +58,12 @@ class _CardDetailState extends State<CardDetail> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await _storage.removeCardModel(widget.card.id);
-          Navigator.pop(context); // Возвращение на предыдущий экран после удаления
+          try {
+            await _storage.removeCardModel(widget.card.id);
+            Navigator.pop(context, true); // Передаем `true` для индикации обновления
+          } catch (e) {
+            print('Failed to delete card: $e');
+          }
         },
         label: Text('Удалить'),
         icon: Icon(Icons.delete),

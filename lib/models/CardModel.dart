@@ -34,5 +34,28 @@ class CardModel {
       description: map['description'],
       favourite: map['favourite'] ?? false,
     );
+
+  }
+  // Метод toJson для преобразования объекта в Map
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'image_url': (image.image as NetworkImage).url, // Извлекаем URL из NetworkImage
+      'name': name,
+      'description': description,
+      'price': 1000
+    };
+  }
+
+  // Метод fromJson для создания объекта из Map
+  factory CardModel.fromJson(Map<String, dynamic> json) {
+    return CardModel(
+      id: json['ID'],
+      image: Image.network(json['ImageURL']),
+      // Создаем Image из URL
+      name: json['Name'],
+      description: json['Description'],
+      favourite: json['favourite'] ?? false,
+    );
   }
 }

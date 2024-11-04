@@ -1,3 +1,4 @@
+import 'package:adyshkin_pcs/api_service.dart';
 import 'package:adyshkin_pcs/di/cardsStorage.dart';
 import 'package:adyshkin_pcs/models/CardModel.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ class Listing extends StatefulWidget {
 }
 
 class _ListingState extends State<Listing> {
-  final CardModelStorage _storage = CardModelStorage();
+  final ApiService _apiService = ApiService();
   List<CardModel> _cardModels = [];
 
   @override
@@ -19,22 +20,31 @@ class _ListingState extends State<Listing> {
   }
 
   Future<void> _loadCardModels() async {
-    final cards = await _storage.getAllCardModels();
-    setState(() {
-      _cardModels = cards;
-    });
+    try {
+      final cards = await _apiService.fetchCards();
+      setState(() {
+        _cardModels = cards;
+      });
+    } catch (e) {
+      print('Failed to load cards: $e');
+    }
   }
 
   void _addCard(String imageUrl, String name, String description) async {
     final newCard = CardModel(
-      id: DateTime.now().millisecondsSinceEpoch, // Простая генерация уникального ID
+      id: DateTime.now().millisecondsSinceEpoch, // Временно, реальный ID присвоит сервер
       image: Image.network(imageUrl),
       name: name,
       description: description,
     );
-    await _storage.addCardModel(newCard);
-    await _loadCardModels(); // Обновление списка после добавления
+    try {
+      await _apiService.addCard(newCard);
+      await _loadCardModels(); // Обновляем список после добавления
+    } catch (e) {
+      print('Failed to add card: $e');
+    }
   }
+
 
   void _showAddCardBottomSheet(BuildContext context) {
     final TextEditingController imageController = TextEditingController();
@@ -99,13 +109,17 @@ class _ListingState extends State<Listing> {
           itemBuilder: (context, index) {
             final card = _cardModels[index];
             return GestureDetector(
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => CardDetail(card: card),
                   ),
                 );
+                if (result == true) {
+                  // Если карточка была удалена, обновляем список
+                  await _loadCardModels();
+                }
               },
               child: Card(
                 shape: RoundedRectangleBorder(
