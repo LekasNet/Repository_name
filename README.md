@@ -1,5 +1,6 @@
 # Делимарский Андрей Сергеевич ЭФБО-03-22
 
+![android](https://github.com/LekasNet/Repository_name/blob/eight/server.jpg)
 ## Ниже листать не надо
 
 ## Я серьёзно
