@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "947217508",
+    "project_id": "repository-name",
+    "storage_bucket": "repository-name.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947217508:android:7b1d1b73fa861236722b71",
+        "android_client_info": {
+          "package_name": "lekas.pcs.mirea.adyshkin_pcs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "947217508-5ev7kna3cvdqd8belv05scuv8akr7nem.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxVPj9-2oFkZCHpXoaHtqYdM-_ts62ve8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "947217508-5ev7kna3cvdqd8belv05scuv8akr7nem.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
